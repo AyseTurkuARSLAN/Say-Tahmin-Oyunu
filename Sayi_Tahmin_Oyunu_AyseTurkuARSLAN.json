@@ -1,0 +1,241 @@
+[
+    {
+        "id": "4824dd4f65c2602a",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "32246765c79ac1e6",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "29455d08644832e4",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#461b1b",
+            "primary": "#023a50",
+            "bgPage": "#708ab2",
+            "groupBg": "#a379af",
+            "groupOutline": "#2d0101"
+        },
+        "sizes": {
+            "density": "comfortable",
+            "pagePadding": "36px",
+            "groupGap": "36px",
+            "groupBorderRadius": "36px",
+            "widgetGap": "36px"
+        }
+    },
+    {
+        "id": "5486d33ae123321d",
+        "type": "ui-page",
+        "name": "Page 1",
+        "ui": "32246765c79ac1e6",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "29455d08644832e4",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": 0,
+                "cols": 3
+            },
+            {
+                "name": "Tablet",
+                "px": 576,
+                "cols": 6
+            },
+            {
+                "name": "Small Desktop",
+                "px": 768,
+                "cols": 9
+            },
+            {
+                "name": "Desktop",
+                "px": 1024,
+                "cols": 12
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "ef767d37b063cc93",
+        "type": "ui-group",
+        "name": "Sayı Tahmini Oyunumuza Hoşgeldiniz!",
+        "page": "5486d33ae123321d",
+        "width": 6,
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "9bbd303b581f5de2",
+        "type": "ui-text-input",
+        "z": "4824dd4f65c2602a",
+        "group": "ef767d37b063cc93",
+        "name": "",
+        "label": "text",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "topic": "topic",
+        "topicType": "msg",
+        "mode": "number",
+        "tooltip": "",
+        "delay": "",
+        "passthru": false,
+        "sendOnDelay": false,
+        "sendOnBlur": false,
+        "sendOnEnter": true,
+        "className": "",
+        "clearable": false,
+        "sendOnClear": false,
+        "icon": "",
+        "iconPosition": "left",
+        "iconInnerPosition": "inside",
+        "x": 130,
+        "y": 120,
+        "wires": [
+            [
+                "e436d7940ecd321f"
+            ]
+        ]
+    },
+    {
+        "id": "d7cd7403564599ca",
+        "type": "ui-button",
+        "z": "4824dd4f65c2602a",
+        "group": "ef767d37b063cc93",
+        "name": "",
+        "label": "Oyunu Sıfırla!",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "reset",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 220,
+        "y": 320,
+        "wires": [
+            [
+                "e436d7940ecd321f"
+            ]
+        ]
+    },
+    {
+        "id": "e436d7940ecd321f",
+        "type": "function",
+        "z": "4824dd4f65c2602a",
+        "name": "function 1",
+        "func": "// 1. Hafızayı çek\nlet hak = context.get('hak') ?? 10;\nlet benimSayim = context.get('benimSayim') || null;\n\n// 2. SIFIRLAMA\nif (msg.payload === \"reset\") {\n    context.set('hak', 10);\n    context.set('benimSayim', null);\n    context.set('oyunBitti', false); // Arka plan kilidini açar\n    return { payload: { mesaj: \"Yeni Oyun! Lütfen 0 ile 20 arasında  bir sayı girin.\", hak: 10 } };\n}\n\n// 3. SAYI GİRİŞİ\nlet input = parseInt(msg.payload);\nif (isNaN(input)) {\n    return { payload: { mesaj: \"Lütfen 0 ile 20 arasında bir sayı girip Enter'a basın!\", hak: hak } };\n}\n\nif (benimSayim === null) {\n    benimSayim = input;\n    context.set('benimSayim', benimSayim);\n}\n\n// 4. BİLGİSAYAR TAHMİNİ\nlet pcSans = Math.floor(Math.random() * 20);\nhak -= 1;\ncontext.set('hak', hak);\n\nlet mesaj = \"\";\nif (pcSans === benimSayim) {\n    mesaj = \"BİLGİSAYAR BİLDİ! Sayınız: \" + pcSans;\n    context.set('oyunBitti', true); // Yeni sayı girmeyi engellemek için\n} else if (hak <= 0) {\n    mesaj = \"SİZ KAZANDINIZ! Bilgisayar bulamadı.\";\n    context.set('oyunBitti', true);\n} else {\n    mesaj = \"Bilgisayar \" + pcSans + \" dedi. Sizin değil!\";\n}\n\n// 5. PAKETİ GÖNDER (Bitti bilgisini artık göndermiyoruz)\nmsg.payload = {\n    mesaj: mesaj,\n    hak: hak\n};\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\ncontext.set('hak', 10);\ncontext.set('oyunBitti', false);\ncontext.set('benimSayim', null);",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 120,
+        "wires": [
+            [
+                "77d722744b814aa6",
+                "d51948aa6436f585"
+            ]
+        ]
+    },
+    {
+        "id": "77d722744b814aa6",
+        "type": "debug",
+        "z": "4824dd4f65c2602a",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 860,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "d51948aa6436f585",
+        "type": "ui-template",
+        "z": "4824dd4f65c2602a",
+        "group": "ef767d37b063cc93",
+        "page": "",
+        "ui": "",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "head": "",
+        "format": "<div style=\"padding: 25px; border-radius: 15px; text-align: center; border: 3px solid #333; min-height: 180px;\">\n    \n    <h1 style=\"color: black !important; margin: 0; font-family: sans-serif;\">\n        {{msg.payload.mesaj || 'Sayı Girip Enter\\'a Basın!'}}\n    </h1>\n    \n    <hr style=\"border: 1px solid #444; margin: 15px 0;\">\n    \n    <h2 style=\"color: black !important;\">\n        Kalan Tahmin Hakkı: <span style=\"font-size: 1.5em; font-weight: bold;\">{{msg.payload.hak}}</span>\n    </h2>\n\n    </div>",
+        "storeOutMessages": true,
+        "passthru": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 800,
+        "y": 300,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2799f2581a19b95a",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.30.2"
+        }
+    }
+]
